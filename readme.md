@@ -5,6 +5,10 @@
 
 ## 部署
 ```bash
+
+#安装头文件
+apt install -y libbpf-dev linux-headers-$(uname -r)
+
 # 编译
 make
 
